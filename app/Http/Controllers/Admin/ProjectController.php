@@ -15,7 +15,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::paginate(10);
+        $projects = Project::paginate();
         return view('admin.projects.index', compact('projects'));
     }
 
@@ -26,7 +26,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.projects.create');
     }
 
     /**
@@ -37,7 +37,14 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validated();
+
+        $data = $request->all();
+        $new_project = new Project;
+        $new_project->fill($data);
+        $new_project->save();
+
+        return redirect()->route('admin.projects.show', $new_project)->with('message', 'Progetto creato con successo');
     }
 
     /**
@@ -48,7 +55,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        //
+        return view('admin.projects.show', compact('project'));
     }
 
     /**
@@ -59,7 +66,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        //
+        return view('admin.projects.edit', compact('project'));
     }
 
     /**
@@ -71,7 +78,11 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        //
+        $request->validated();
+
+        $data = $request->all();
+        $project->update($data);
+        return redirect()->route('admin.projects.show', compact('project'))->with('message', 'Progetto modificato con successo');
     }
 
     /**
@@ -82,6 +93,7 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        $project->delete();
+        return redirect()->route('admin.projects.index')->with('message', 'Progetto eliminato con successo');
     }
 }
